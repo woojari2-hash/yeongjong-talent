@@ -6,80 +6,444 @@
     <title>2026 YEONGJONG GOT TALENT</title>
 
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e1b4b'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>🏆</text></svg>">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='80%' font-size='80' text-anchor='middle'>🏆</text></svg>">
     <meta name="apple-mobile-web-app-title" content="영종 갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f1f5f9; color: #0f172a; padding-bottom: 40px; }
-        
         header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; color: #f8fafc; }
-        .header-sub { font-size: 0.8rem; color: #c7d2fe; font-weight: 500; }
-        .btn-admin-trigger { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
-
+        h1 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; color: #f8fafc; }
+        .header-sub { font-size: 0.75rem; color: #c7d2fe; }
+        .btn-admin { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 6px 10px; border-radius: 14px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
         .container { max-width: 800px; margin: 0 auto; padding: 16px; }
-        .step-card { background: #ffffff; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
-        .step-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .step-title { font-size: 1.05rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px; }
-        .step-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; display: inline-block; }
+        .card { background: #ffffff; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
         
-        .btn-add-judge { background: #f1f5f9; color: #475569; border: 1px dashed #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
-        .judge-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; min-height: 44px; }
-        .judge-btn { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 24px; white-space: nowrap; font-size: 0.9rem; font-weight: 600; color: #475569; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .judge-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-        .badge-count { background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
-        .judge-btn.active .badge-count { background: rgba(255,255,255,0.25); color: white; }
+        .judge-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .j-btn { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: #475569; white-space: nowrap; cursor: pointer; }
+        .j-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+        
+        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        @media(min-width: 500px) { .team-grid { grid-template-columns: repeat(5, 1fr); } }
+        .t-card { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px; cursor: pointer; text-align: left; }
+        .t-card.active { background: #fff7ed; border-color: #f97316; }
+        .t-num { font-size: 0.7rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 4px; }
+        .t-card.active .t-num { background: #f97316; color: white; }
+        .t-name { font-size: 0.85rem; font-weight: bold; color: #0f172a; }
+        .t-prev { font-size: 0.7rem; color: #2563eb; margin-top: 4px; font-weight: bold; }
 
-        .judge-summary-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 16px; margin-top: 10px; font-size: 0.85rem; color: #1e3a8a; }
-        .judge-summary-title { font-weight: 700; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .banner { background: #0f172a; color: white; border-radius: 12px; padding: 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .s-group { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .s-head { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; }
+        .s-val { color: #2563eb; font-size: 1rem; }
+        .s-ctrl { display: flex; align-items: center; gap: 10px; }
+        .btn-pm { width: 34px; height: 34px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        input[type="range"] { flex: 1; height: 6px; accent-color: #2563eb; }
 
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; min-height: 100px; }
-        .team-card { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; position: relative; }
-        .team-card.active { background: #fff7ed; border-color: #f97316; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15); }
-        .team-badge-num { display: inline-block; background: #e2e8f0; color: #334155; font-size: 0.75rem; font-weight: 700; padding: 2px 6px; border-radius: 6px; margin-bottom: 4px; }
-        .team-card.active .team-badge-num { background: #f97316; color: white; }
-        .team-card-title { font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
-        .team-card-sub { font-size: 0.75rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
-        .team-score-preview { font-size: 0.75rem; color: #2563eb; background: #dbeafe; padding: 3px 6px; border-radius: 6px; font-weight: 700; display: inline-block; }
+        .btn-main { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 6px; }
+        .btn-sub-reset { width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 10px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 6px; }
+        .btn-csv { background: #10b981; color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-total-reset { background: #ef4444; color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 6px; }
 
-        .active-team-banner { background: #0f172a; color: white; border-radius: 14px; padding: 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .banner-num { background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 4px; }
-        .banner-title { font-size: 1.1rem; font-weight: 700; }
-        .banner-desc { font-size: 0.8rem; color: #94a3b8; margin-top: 2px; }
-        .banner-genre { background: #334155; color: #f1f5f9; font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 8px; }
-
-        .score-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
-        .score-card.bonus { background: #fffbeb; border-color: #fde68a; }
-        .score-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .score-card-title { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
-        .score-card-val { font-size: 1.05rem; font-weight: 800; color: #2563eb; }
-        .score-controls { display: flex; align-items: center; gap: 12px; }
-        .btn-minus-plus { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #cbd5e1; background: white; font-size: 1.1rem; font-weight: bold; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        input[type="range"] { flex: 1; height: 8px; border-radius: 4px; accent-color: #2563eb; }
-
-        .btn-action-group { display: flex; gap: 8px; margin-top: 12px; }
-        .btn-save { flex: 2; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; }
-        .btn-team-reset { flex: 1; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
-
-        .btn-csv { background: #10b981; color: white; border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 12px; }
-        .btn-reset { background: #ef4444; color: white; border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 8px; }
-
-        .table-container { overflow-x: auto; margin-top: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: center; }
-        th, td { padding: 10px 6px; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f1f5f9; color: #475569; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: center; margin-top: 8px; }
+        th, td { padding: 8px 4px; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; color: #475569; }
         .rank-1 { background-color: #fef3c7 !important; font-weight: bold; }
         .rank-2 { background-color: #f1f5f9 !important; font-weight: bold; }
         .rank-3 { background-color: #ffedd5 !important; font-weight: bold; }
-        .rules-box { font-size: 0.8rem; color: #64748b; line-height: 1.5; background: #f8fafc; padding: 12px; border-radius: 10px; margin-top: 12px; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
-        .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 650px; max-height: 85vh; overflow-y: auto; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
-        .modal-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; }
-        .btn-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; }
-        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px; }
-        .admin-table th, .admin-table td { border: 1px solid #
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 16px; }
+        .modal-body { background: white; border-radius: 14px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 16px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>2026 YEONGJONG GOT TALENT (IN PYEONGCHANG)</h1>
+        <div class="header-sub">Real-time Smart Judging System</div>
+        <button class="btn-admin" onclick="openAdmin()">🔐 관리자</button>
+    </header>
+
+    <div class="container">
+        <!-- STEP 1 -->
+        <div class="card">
+            <div class="title">
+                <span>👤 STEP 1. 심사위원 선택</span>
+                <button class="j-btn" style="padding:4px 10px; font-size:0.75rem;" onclick="addJudge()">+ 위원 추가</button>
+            </div>
+            <div class="judge-scroll" id="judgeGrid"></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="card">
+            <div class="title"><span>🎭 STEP 2. 팀 선택 (10개 팀)</span></div>
+            <div class="team-grid" id="teamGrid"></div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="card">
+            <div class="banner">
+                <div>
+                    <span class="t-num" id="bNum" style="background:#f59e0b; color:#0f172a;">1번 팀</span>
+                    <div style="font-size: 1rem; font-weight: bold;" id="bTitle">[1반] 댄스</div>
+                    <div style="font-size: 0.75rem; color:#94a3b8;" id="bDesc">로딩중...</div>
+                </div>
+                <div style="background:#334155; padding:4px 8px; border-radius:6px; font-size:0.75rem;" id="bGenre">댄스</div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>⭐ 완성도 및 준비도 (40점)</span><span class="s-val" id="valCompleteness">30점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('completeness', -1)">-</button>
+                    <input type="range" id="scoreCompleteness" min="0" max="40" value="30" oninput="ui('completeness')">
+                    <button class="btn-pm" onclick="adj('completeness', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>👥 관객 호응도 (30점)</span><span class="s-val" id="valReaction">20점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('reaction', -1)">-</button>
+                    <input type="range" id="scoreReaction" min="0" max="30" value="20" oninput="ui('reaction')">
+                    <button class="btn-pm" onclick="adj('reaction', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>🥑 무대 매너 (20점)</span><span class="s-val" id="valManner">15점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('manner', -1)">-</button>
+                    <input type="range" id="scoreManner" min="0" max="20" value="15" oninput="ui('manner')">
+                    <button class="btn-pm" onclick="adj('manner', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group" style="background:#fffbeb; border-color:#fde68a;">
+                <div class="s-head"><span style="color:#d97706;">🪄 가산점 (10점)</span><span class="s-val" id="valBonus" style="color:#d97706;">5점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('bonus', -1)">-</button>
+                    <input type="range" id="scoreBonus" min="0" max="10" value="5" oninput="ui('bonus')">
+                    <button class="btn-pm" onclick="adj('bonus', 1)">+</button>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="saveScore()">현재 팀 점수 저장</button>
+            <button class="btn-sub-reset" onclick="resetTeam()">🔄 이 팀 점수 초기화</button>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="card">
+            <div class="title"><span>🏆 실시간 전체 순위 (1~10위)</span></div>
+            <table>
+                <thead>
+                    <tr><th>순위</th><th>팀명</th><th>장르</th><th>총점</th><th>제외점수</th></tr>
+                </thead>
+                <tbody id="rankBody"></tbody>
+            </table>
+            <button class="btn-csv" onclick="downCSV()">📊 전체 집계 CSV 다운로드</button>
+            <button class="btn-total-reset" onclick="resetAll()">🗑️ 데이터 전체 초기화</button>
+        </div>
+    </div>
+
+    <!-- 관리자 모달 -->
+    <div class="modal" id="adminModal">
+        <div class="modal-body">
+            <div class="title"><span>🔐 관리자 모드</span> <button class="j-btn" onclick="closeAdmin()">닫기</button></div>
+            <table id="adminTable"></table>
+            <button class="btn-total-reset" style="margin-top:14px;" onclick="resetAll()">전체 데이터 강제 초기화</button>
+        </div>
+    </div>
+
+    <script>
+        var TEAMS = [
+            { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸 외" },
+            { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee 외" },
+            { id: 3, name: "[3반] 댄스", genre: "댄스", title: "뉴진스-OMG 외" },
+            { id: 4, name: "[6반 김지승] 노래", genre: "노래", title: "김지승-Aventador" },
+            { id: 5, name: "[7반] 댄스", genre: "댄스", title: "티아라-뽀삐뽀삐 외" },
+            { id: 6, name: "[9반] 댄스", genre: "댄스", title: "크레용팝-어이 외" },
+            { id: 7, name: "[10반] 댄스", genre: "댄스", title: "트와이스-TT 외" },
+            { id: 8, name: "[3반 조은성] 노래", genre: "노래", title: "너드커넥션-그대만" },
+            { id: 9, name: "[연합A] 댄스", genre: "댄스", title: "코르티스 외" },
+            { id: 10, name: "[연합B] 댄스", genre: "댄스", title: "효린-달리 외" }
+        ];
+
+        var judges = ["최재호", "양장관", "정우철", "김은서", "이은지"];
+        var curJudge = "최재호";
+        var curTeam = 1;
+        var scores = {};
+
+        try {
+            var saved = localStorage.getItem('yj_talent_scores_v2');
+            if (saved) scores = JSON.parse(saved);
+        } catch(e) { scores = {}; }
+
+        window.onload = function() {
+            renderAll();
+        };
+
+        function renderAll() {
+            renderJudges();
+            renderTeams();
+            loadScore();
+            renderRank();
+        }
+
+        function renderJudges() {
+            var grid = document.getElementById('judgeGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            for(var i=0; i<judges.length; i++) {
+                var j = judges[i];
+                var cnt = scores[j] ? Object.keys(scores[j]).length : 0;
+                var btn = document.createElement('button');
+                btn.className = 'j-btn ' + (j === curJudge ? 'active' : '');
+                btn.innerText = j + ' (' + cnt + '/10)';
+                (function(name) {
+                    btn.onclick = function() {
+                        curJudge = name;
+                        renderJudges();
+                        renderTeams();
+                        loadScore();
+                    };
+                })(j);
+                grid.appendChild(btn);
+            }
+        }
+
+        function addJudge() {
+            var name = prompt("추가할 심사위원 이름을 입력하세요:");
+            if(name && name.trim()) {
+                var clean = name.trim();
+                if(judges.indexOf(clean) === -1) {
+                    judges.push(clean);
+                    curJudge = clean;
+                    renderAll();
+                }
+            }
+        }
+
+        function renderTeams() {
+            var grid = document.getElementById('teamGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            var jScores = scores[curJudge] || {};
+
+            for(var i=0; i<TEAMS.length; i++) {
+                var t = TEAMS[i];
+                var card = document.createElement('div');
+                card.className = 't-card ' + (t.id === curTeam ? 'active' : '');
+                
+                (function(id) {
+                    card.onclick = function() {
+                        curTeam = id;
+                        renderTeams();
+                        loadScore();
+                    };
+                })(t.id);
+
+                var got = jScores[t.id];
+                var prevText = got ? (got.total + '점 완료') : '미입력';
+                var prevColor = got ? '#2563eb' : '#94a3b8';
+
+                card.innerHTML = '<span class="t-num">' + t.id + '팀</span>' +
+                                 '<div class="t-name">' + t.name + '</div>' +
+                                 '<div class="t-prev" style="color:' + prevColor + '">' + prevText + '</div>';
+                grid.appendChild(card);
+            }
+
+            var tInfo = TEAMS[0];
+            for(var k=0; k<TEAMS.length; k++) {
+                if(TEAMS[k].id === curTeam) tInfo = TEAMS[k];
+            }
+            document.getElementById('bNum').innerText = tInfo.id + '번 팀';
+            document.getElementById('bTitle').innerText = tInfo.name;
+            document.getElementById('bDesc').innerText = tInfo.title;
+            document.getElementById('bGenre').innerText = tInfo.genre;
+        }
+
+        function adj(field, delta) {
+            var id = 'score' + field.charAt(0).toUpperCase() + field.slice(1);
+            var inp = document.getElementById(id);
+            if(!inp) return;
+            var val = parseInt(inp.value) + delta;
+            if(val >= parseInt(inp.min) && val <= parseInt(inp.max)) {
+                inp.value = val;
+                ui(field);
+            }
+        }
+
+        function ui(field) {
+            var cap = field.charAt(0).toUpperCase() + field.slice(1);
+            var inp = document.getElementById('score' + cap);
+            var valElem = document.getElementById('val' + cap);
+            if(inp && valElem) valElem.innerText = inp.value + '점';
+        }
+
+        function loadScore() {
+            var jScores = scores[curJudge] || {};
+            var s = jScores[curTeam] || { completeness: 30, reaction: 20, manner: 15, bonus: 5 };
+            
+            document.getElementById('scoreCompleteness').value = s.completeness;
+            document.getElementById('scoreReaction').value = s.reaction;
+            document.getElementById('scoreManner').value = s.manner;
+            document.getElementById('scoreBonus').value = s.bonus;
+
+            ui('completeness');
+            ui('reaction');
+            ui('manner');
+            ui('bonus');
+        }
+
+        function saveScore() {
+            var c = parseInt(document.getElementById('scoreCompleteness').value);
+            var r = parseInt(document.getElementById('scoreReaction').value);
+            var m = parseInt(document.getElementById('scoreManner').value);
+            var b = parseInt(document.getElementById('scoreBonus').value);
+            var tot = c + r + m + b;
+
+            if(!scores[curJudge]) scores[curJudge] = {};
+            scores[curJudge][curTeam] = { completeness: c, reaction: r, manner: m, bonus: b, total: tot };
+
+            try { localStorage.setItem('yj_talent_scores_v2', JSON.stringify(scores)); } catch(e){}
+
+            renderAll();
+            alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 저장되었습니다!');
+
+            if(curTeam < 10) {
+                curTeam++;
+                renderTeams();
+                loadScore();
+            }
+        }
+
+        function resetTeam() {
+            if(confirm(curTeam + '번 팀 점수를 초기화하시겠습니까?')) {
+                if(scores[curJudge] && scores[curJudge][curTeam]) {
+                    delete scores[curJudge][curTeam];
+                    try { localStorage.setItem('yj_talent_scores_v2', JSON.stringify(scores)); } catch(e){}
+                    renderAll();
+                    alert('초기화되었습니다.');
+                } else {
+                    alert('저장된 점수가 없습니다.');
+                }
+            }
+        }
+
+        function renderRank() {
+            var body = document.getElementById('rankBody');
+            if(!body) return;
+            body.innerHTML = '';
+
+            var results = [];
+            for(var i=0; i<TEAMS.length; i++) {
+                var t = TEAMS[i];
+                var all = [];
+                var cSum = 0, rSum = 0, mSum = 0;
+
+                var keys = Object.keys(scores);
+                for(var j=0; j<keys.length; j++) {
+                    var jName = keys[j];
+                    if(scores[jName] && scores[jName][t.id]) {
+                        var obj = scores[jName][t.id];
+                        all.push(obj.total);
+                        cSum += obj.completeness;
+                        rSum += obj.reaction;
+                        mSum += obj.manner;
+                    }
+                }
+
+                var finalTot = 0;
+                var excStr = "-";
+
+                if(all.length >= 3) {
+                    all.sort(function(a,b){return a-b;});
+                    var min = all.shift();
+                    var max = all.pop();
+                    for(var k=0; k<all.length; k++) finalTot += all[k];
+                    excStr = '최저 ' + min + ' / 최고 ' + max;
+                } else {
+                    for(var m=0; m<all.length; m++) finalTot += all[m];
+                }
+
+                results.push({ team: t, total: finalTot, exc: excStr, c: cSum, r: rSum, m: mSum });
+            }
+
+            results.sort(function(a,b) {
+                if(b.total !== a.total) return b.total - a.total;
+                if(b.c !== a.c) return b.c - a.c;
+                return b.r - a.r;
+            });
+
+            for(var idx=0; idx<results.length; idx++) {
+                var res = results.items ? results[idx] : results[idx];
+                var tr = document.createElement('tr');
+                if(idx === 0) tr.className = 'rank-1';
+                else if(idx === 1) tr.className = 'rank-2';
+                else if(idx === 2) tr.className = 'rank-3';
+
+                tr.innerHTML = '<td><b>' + (idx+1) + '위</b></td>' +
+                               '<td><b>' + res.team.name + '</b></td>' +
+                               '<td>' + res.team.genre + '</td>' +
+                               '<td><b style="color:#2563eb;">' + res.total + '점</b></td>' +
+                               '<td style="font-size:0.7rem; color:#64748b;">' + res.exc + '</td>';
+                body.appendChild(tr);
+            }
+        }
+
+        function downCSV() {
+            var csv = "\uFEFF순위,팀명,장르,총점\n";
+            var rows = document.querySelectorAll('#rankBody tr');
+            for(var i=0; i<rows.length; i++) {
+                var cols = rows[i].querySelectorAll('td');
+                if(cols.length > 0) {
+                    csv += cols[0].innerText + ',' + cols[1].innerText + ',' + cols[2].innerText + ',' + cols[3].innerText + '\n';
+                }
+            }
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "YEONGJONG_RANKING.csv";
+            link.click();
+        }
+
+        function resetAll() {
+            if(confirm("모든 데이터를 초기화하시겠습니까?")) {
+                try { localStorage.removeItem('yj_talent_scores_v2'); } catch(e){}
+                scores = {};
+                renderAll();
+                closeAdmin();
+                alert("초기화되었습니다.");
+            }
+        }
+
+        function openAdmin() {
+            var pw = prompt("관리자 비밀번호 (1234):");
+            if(pw === "1234") {
+                var tbl = document.getElementById('adminTable');
+                var html = '<tr><th>팀명</th>';
+                for(var i=0; i<judges.length; i++) html += '<th>' + judges[i] + '</th>';
+                html += '</tr>';
+
+                for(var t=0; t<TEAMS.length; t++) {
+                    html += '<tr><td><b>' + TEAMS[t].name + '</b></td>';
+                    for(var j=0; j<judges.length; j++) {
+                        var sObj = scores[judges[j]] ? scores[judges[j]][TEAMS[t].id] : null;
+                        html += '<td>' + (sObj ? sObj.total + '점' : '-') + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                tbl.innerHTML = html;
+                document.getElementById('adminModal').style.display = 'flex';
+            } else if(pw !== null) {
+                alert("비밀번호가 틀렸습니다.");
+            }
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
