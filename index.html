@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인천영종고등학교 장기자랑 심사 시스템</title>
+    <title>2026 YEONGJONG GOT TALENT</title>
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f39c12;
-            --bg-color: #f8f9fa;
+            --bg-color: #f1f5f9;
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --header-bg: #1e1b4b;
             --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --border-radius: 12px;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-radius: 16px;
         }
 
         * {
@@ -23,137 +25,258 @@
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 16px;
-            max-width: 800px;
-            margin: 0 auto;
+            color: var(--text-main);
+            padding-bottom: 40px;
         }
 
+        /* Top Header */
         header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            padding: 24px 20px;
             text-align: center;
-            margin-bottom: 20px;
-            padding: 16px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         h1 {
-            font-size: 1.4rem;
-            color: #1a252f;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             margin-bottom: 6px;
+            color: #f8fafc;
         }
 
-        .sub-title {
-            font-size: 0.85rem;
-            color: #7f8c8d;
+        .header-sub {
+            font-size: 0.82rem;
+            color: #c7d2fe;
+            font-weight: 500;
         }
 
-        .section-card {
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .step-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
         }
 
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 12px;
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .step-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1e293b;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 8px;
         }
 
-        .tab-container {
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: inline-block;
+        }
+
+        .btn-add-judge {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px dashed #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Judges List */
+        .judge-grid {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+            padding-bottom: 6px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .tab-btn {
-            background: #edf2f7;
-            border: 1px solid #cbd5e0;
-            padding: 10px 16px;
-            border-radius: 20px;
+        .judge-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 14px;
+            border-radius: 24px;
             white-space: nowrap;
             font-size: 0.9rem;
             font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .judge-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .badge-count {
+            background: rgba(0,0,0,0.06);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .judge-btn.active .badge-count {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+
+        /* Teams Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .team-card {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
             cursor: pointer;
             transition: all 0.2s;
-            color: #4a5568;
+            text-align: left;
         }
 
-        .tab-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+        .team-card.active {
+            background: #fff7ed;
+            border-color: #f97316;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
         }
 
-        .tab-btn.completed::after {
-            content: " ✓";
-            color: #2ecc71;
-            font-weight: bold;
-        }
-
-        .tab-btn.active.completed::after {
-            color: #fff;
-        }
-
-        .add-judge-btn {
+        .team-badge-num {
+            display: inline-block;
             background: #e2e8f0;
-            border: 1px dashed #a0aec0;
-            padding: 10px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .participant-info {
-            background: #eef6ff;
-            border-left: 4px solid var(--primary-color);
-            padding: 12px;
+            color: #334155;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 6px;
             border-radius: 6px;
-            margin-bottom: 16px;
-        }
-
-        .participant-title {
-            font-weight: bold;
-            font-size: 1.05rem;
-            color: #1e3a8a;
-            margin-bottom: 4px;
-        }
-
-        .participant-desc {
-            font-size: 0.85rem;
-            color: #4b5563;
-        }
-
-        .score-group {
-            margin-bottom: 16px;
-        }
-
-        .score-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 6px;
         }
 
-        .score-label {
-            font-weight: 600;
-            font-size: 0.95rem;
+        .team-card.active .team-badge-num {
+            background: #f97316;
+            color: white;
         }
 
-        .score-value {
-            font-weight: bold;
-            color: var(--primary-color);
+        .team-card-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .team-card-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Active Team Highlight Banner */
+        .active-team-banner {
+            background: #0f172a;
+            color: white;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner-num {
+            background: #f59e0b;
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .banner-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .banner-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .banner-genre {
+            background: #334155;
+            color: #f1f5f9;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* Scoring Cards */
+        .score-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .score-card.bonus {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .score-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .score-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .score-card-val {
             font-size: 1.1rem;
+            font-weight: 800;
+            color: #2563eb;
         }
 
         .score-controls {
@@ -162,22 +285,23 @@
             gap: 12px;
         }
 
-        .btn-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid #cbd5e0;
+        .btn-minus-plus {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
             background: white;
             font-size: 1.2rem;
             font-weight: bold;
+            color: #334155;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             touch-action: manipulation;
         }
 
-        .btn-btn:active {
+        .btn-minus-plus:active {
             background: #e2e8f0;
         }
 
@@ -185,36 +309,55 @@
             flex: 1;
             height: 8px;
             border-radius: 4px;
-            accent-color: var(--primary-color);
+            accent-color: #2563eb;
         }
 
-        .action-btn {
+        /* Action Buttons */
+        .btn-save {
             width: 100%;
-            background: var(--primary-color);
+            background: #2563eb;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: bold;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
-            transition: background 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        .action-btn:active {
-            background: #2563eb;
+        .btn-save:active {
+            background: #1d4ed8;
         }
 
         .btn-csv {
             background: #10b981;
-            margin-top: 10px;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 12px;
         }
 
-        .btn-csv:active {
-            background: #059669;
+        .btn-reset {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 8px;
         }
 
+        /* Rank Table */
         .table-container {
             overflow-x: auto;
             margin-top: 12px;
@@ -222,391 +365,4 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            text-align: center;
-        }
-
-        th, td {
-            padding: 10px 6px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background: #f1f5f9;
-            color: #334155;
-            font-weight: 600;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        .rank-1 { background-color: #fef3c7 !important; font-weight: bold; }
-        .rank-2 { background-color: #f1f5f9 !important; font-weight: bold; }
-        .rank-3 { background-color: #ffedd5 !important; font-weight: bold; }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .badge-dance { background: #dbeafe; color: #1e40af; }
-        .badge-sing { background: #fce7f3; color: #9d174d; }
-
-        .rules-note {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 8px;
-            line-height: 1.4;
-            background: #f8fafc;
-            padding: 8px;
-            border-radius: 6px;
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>인천영종고등학교 장기자랑 심사</h1>
-        <div class="sub-title">최고/최저점 제외 자동 합산 및 실시간 순위 산출</div>
-    </header>
-
-    <!-- 심사위원 선택 영역 -->
-    <div class="section-card">
-        <div class="section-title">
-            <span>👨‍⚖️ 심사위원 선택</span>
-            <button class="add-judge-btn" onclick="addCustomJudge()">+ 위원 추가</button>
-        </div>
-        <div class="tab-container" id="judgeTabs"></div>
-    </div>
-
-    <!-- 참가팀 채점 영역 -->
-    <div class="section-card">
-        <div class="section-title">
-            <span>🎭 참가팀 채점 (1~10번)</span>
-        </div>
-        <div class="tab-container" id="teamTabs"></div>
-
-        <div class="participant-info" id="participantInfo">
-            <div class="participant-title" id="pTitle">1번 팀</div>
-            <div class="participant-desc" id="pDesc">정보 로딩 중...</div>
-        </div>
-
-        <div id="scoringForm">
-            <div class="score-group">
-                <div class="score-header">
-                    <span class="score-label">완성도 및 준비도 (최대 40점)</span>
-                    <span class="score-value" id="valCompleteness">30점</span>
-                </div>
-                <div class="score-controls">
-                    <button class="btn-btn" onclick="adjustScore('completeness', -1)">-</button>
-                    <input type="range" id="scoreCompleteness" min="0" max="40" value="30" oninput="updateScoreUI('completeness')">
-                    <button class="btn-btn" onclick="adjustScore('completeness', 1)">+</button>
-                </div>
-            </div>
-
-            <div class="score-group">
-                <div class="score-header">
-                    <span class="score-label">관객 호응도 (최대 30점)</span>
-                    <span class="score-value" id="valReaction">20점</span>
-                </div>
-                <div class="score-controls">
-                    <button class="btn-btn" onclick="adjustScore('reaction', -1)">-</button>
-                    <input type="range" id="scoreReaction" min="0" max="30" value="20" oninput="updateScoreUI('reaction')">
-                    <button class="btn-btn" onclick="adjustScore('reaction', 1)">+</button>
-                </div>
-            </div>
-
-            <div class="score-group">
-                <div class="score-header">
-                    <span class="score-label">무대 매너 및 태도 (최대 20점)</span>
-                    <span class="score-value" id="valManner">15점</span>
-                </div>
-                <div class="score-controls">
-                    <button class="btn-btn" onclick="adjustScore('manner', -1)">-</button>
-                    <input type="range" id="scoreManner" min="0" max="20" value="15" oninput="updateScoreUI('manner')">
-                    <button class="btn-btn" onclick="adjustScore('manner', 1)">+</button>
-                </div>
-            </div>
-
-            <div class="score-group">
-                <div class="score-header">
-                    <span class="score-label">가산점 (최대 10점)</span>
-                    <span class="score-value" id="valBonus">5점</span>
-                </div>
-                <div class="score-controls">
-                    <button class="btn-btn" onclick="adjustScore('bonus', -1)">-</button>
-                    <input type="range" id="scoreBonus" min="0" max="10" value="5" oninput="updateScoreUI('bonus')">
-                    <button class="btn-btn" onclick="adjustScore('bonus', 1)">+</button>
-                </div>
-            </div>
-
-            <button class="action-btn" onclick="saveScore()">현재 팀 점수 저장</button>
-        </div>
-    </div>
-
-    <!-- 전체 종합 순위표 -->
-    <div class="section-card">
-        <div class="section-title">
-            <span>🏆 실시간 전체 순위 (1~10위)</span>
-        </div>
-        
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>순위</th>
-                        <th>팀명</th>
-                        <th>장르</th>
-                        <th>총점(합산)</th>
-                        <th>제외점수(최고/최저)</th>
-                    </tr>
-                </thead>
-                <tbody id="rankTableBody">
-                </tbody>
-            </table>
-        </div>
-
-        <div class="rules-note">
-            📌 <b>집계 및 동점자 규정:</b><br>
-            • 심사위원이 3명 이상일 때, 최고점 1개와 최저점 1개를 자동 제외한 나머지 점수의 <b>'총합'</b>으로 순위를 매깁니다.<br>
-            • 동점자 발생 시 <b>완성도 ➔ 관객 호응도 ➔ 무대 매너</b> 순으로 높은 팀이 상위를 차지합니다.
-        </div>
-
-        <button class="action-btn btn-csv" onclick="downloadCSV()">📊 전체 결과 CSV 다운로드</button>
-    </div>
-
-    <script>
-        const TEAMS = [
-            { id: 1, name: "1팀 ([1반] 댄스)", genre: "댄스", title: "리센느-프리티걸, 트와이스-낙낙" },
-            { id: 2, name: "2팀 ([2반] 댄스)", genre: "댄스", title: "소녀시대-Gee, 원더걸스-텔미" },
-            { id: 3, name: "3팀 ([3반] 댄스)", genre: "댄스", title: "뉴진스-OMG 뽕짝, 코르티스-아사이" },
-            { id: 4, name: "4팀 ([6반 김지승] 노래)", genre: "노래", title: "김지승-Aventador&beatbox party" },
-            { id: 5, name: "5팀 ([7반] 댄스)", genre: "댄스", title: "티아라-뽀삐뽀삐, 빅뱅-판타스틱베이비 외" },
-            { id: 6, name: "6팀 ([9반] 댄스)", genre: "댄스", title: "크레용팝-어이, 싹쓰리-다시 여기 바닷가" },
-            { id: 7, name: "7팀 ([10반] 댄스)", genre: "댄스", title: "트와이스-TT, 에이티즈-BAD" },
-            { id: 8, name: "8팀 ([3반 조은성] 노래)", genre: "노래", title: "너드커넥션-그대만 있다면" },
-            { id: 9, name: "9팀 ([연합A] 댄스)", genre: "댄스", title: "코르티스, 영파씨, 레드벨벳 (2/3/7/10반 연합)" },
-            { id: 10, name: "10팀 ([연합B] 댄스)", genre: "댄스", title: "Lah Pat-Rodeo, 효린-달리 (1/2반 연합)" }
-        ];
-
-        let judges = ["최재호", "양장관", "정우철", "김은서", "이은지"];
-        let currentJudge = judges[0];
-        let currentTeamId = 1;
-        let scoresData = JSON.parse(localStorage.getItem('yj_talent_scores') || '{}');
-
-        window.onload = function() {
-            renderJudgeTabs();
-            renderTeamTabs();
-            loadCurrentScore();
-            updateRankTable();
-        };
-
-        function renderJudgeTabs() {
-            const container = document.getElementById('judgeTabs');
-            container.innerHTML = '';
-            judges.forEach(j => {
-                const btn = document.createElement('button');
-                btn.className = `tab-btn ${j === currentJudge ? 'active' : ''}`;
-                btn.innerText = j;
-                btn.onclick = () => {
-                    currentJudge = j;
-                    renderJudgeTabs();
-                    renderTeamTabs();
-                    loadCurrentScore();
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function addCustomJudge() {
-            const name = prompt("추가할 심사위원 이름을 입력하세요:");
-            if (name && name.trim() !== "") {
-                const cleanName = name.trim();
-                if (!judges.includes(cleanName)) {
-                    judges.push(cleanName);
-                    currentJudge = cleanName;
-                    renderJudgeTabs();
-                    renderTeamTabs();
-                    loadCurrentScore();
-                }
-            }
-        }
-
-        function renderTeamTabs() {
-            const container = document.getElementById('teamTabs');
-            container.innerHTML = '';
-            TEAMS.forEach(team => {
-                const btn = document.createElement('button');
-                const isCompleted = scoresData[currentJudge] && scoresData[currentJudge][team.id];
-                btn.className = `tab-btn ${team.id === currentTeamId ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
-                btn.innerText = `${team.id}번 팀`;
-                btn.onclick = () => {
-                    currentTeamId = team.id;
-                    renderTeamTabs();
-                    loadCurrentScore();
-                };
-                container.appendChild(btn);
-            });
-
-            const t = TEAMS.find(item => item.id === currentTeamId);
-            document.getElementById('pTitle').innerText = t.name;
-            document.getElementById('pDesc').innerText = `곡/제목: ${t.title}`;
-        }
-
-        function adjustScore(field, delta) {
-            const input = document.getElementById(`score${field.charAt(0).toUpperCase() + field.slice(1)}`);
-            let newVal = parseInt(input.value) + delta;
-            if (newVal >= parseInt(input.min) && newVal <= parseInt(input.max)) {
-                input.value = newVal;
-                updateScoreUI(field);
-            }
-        }
-
-        function updateScoreUI(field) {
-            const capField = field.charAt(0).toUpperCase() + field.slice(1);
-            const val = document.getElementById(`score${capField}`).value;
-            document.getElementById(`val${capField}`).innerText = `${val}점`;
-        }
-
-        function saveScore() {
-            const completeness = parseInt(document.getElementById('scoreCompleteness').value);
-            const reaction = parseInt(document.getElementById('scoreReaction').value);
-            const manner = parseInt(document.getElementById('scoreManner').value);
-            const bonus = parseInt(document.getElementById('scoreBonus').value);
-            const total = completeness + reaction + manner + bonus;
-
-            if (!scoresData[currentJudge]) {
-                scoresData[currentJudge] = {};
-            }
-
-            scoresData[currentJudge][currentTeamId] = { completeness, reaction, manner, bonus, total };
-            localStorage.setItem('yj_talent_scores', JSON.stringify(scoresData));
-
-            renderTeamTabs();
-            updateRankTable();
-            alert(`${currentJudge} 심사위원님 - ${currentTeamId}번 팀 점수가 저장되었습니다!`);
-
-            if (currentTeamId < 10) {
-                currentTeamId++;
-                renderTeamTabs();
-                loadCurrentScore();
-            }
-        }
-
-        function loadCurrentScore() {
-            const judgeScores = scoresData[currentJudge] || {};
-            const score = judgeScores[currentTeamId] || { completeness: 30, reaction: 20, manner: 15, bonus: 5 };
-
-            document.getElementById('scoreCompleteness').value = score.completeness;
-            document.getElementById('scoreReaction').value = score.reaction;
-            document.getElementById('scoreManner').value = score.manner;
-            document.getElementById('scoreBonus').value = score.bonus;
-
-            updateScoreUI('completeness');
-            updateScoreUI('reaction');
-            updateScoreUI('manner');
-            updateScoreUI('bonus');
-        }
-
-        function updateRankTable() {
-            const rankBody = document.getElementById('rankTableBody');
-            rankBody.innerHTML = '';
-
-            let teamResults = TEAMS.map(team => {
-                let allScores = [];
-                let completenessSum = 0;
-                let reactionSum = 0;
-                let mannerSum = 0;
-
-                Object.keys(scoresData).forEach(jName => {
-                    if (scoresData[jName][team.id]) {
-                        const s = scoresData[jName][team.id];
-                        allScores.push(s.total);
-                        completenessSum += s.completeness;
-                        reactionSum += s.reaction;
-                        mannerSum += s.manner;
-                    }
-                });
-
-                let finalTotal = 0;
-                let excludedStr = "없음";
-
-                if (allScores.length >= 3) {
-                    allScores.sort((a, b) => a - b);
-                    const min = allScores.shift();
-                    const max = allScores.pop();
-                    finalTotal = allScores.reduce((acc, cur) => acc + cur, 0);
-                    excludedStr = `최저 ${min} / 최고 ${max}`;
-                } else {
-                    finalTotal = allScores.reduce((acc, cur) => acc + cur, 0);
-                }
-
-                return {
-                    team,
-                    finalTotal,
-                    excludedStr,
-                    completenessSum,
-                    reactionSum,
-                    mannerSum
-                };
-            });
-
-            teamResults.sort((a, b) => {
-                if (b.finalTotal !== a.finalTotal) return b.finalTotal - a.finalTotal;
-                if (b.completenessSum !== a.completenessSum) return b.completenessSum - a.completenessSum;
-                if (b.reactionSum !== a.reactionSum) return b.reactionSum - a.reactionSum;
-                return b.mannerSum - a.mannerSum;
-            });
-
-            teamResults.forEach((res, idx) => {
-                const tr = document.createElement('tr');
-                if (idx === 0) tr.className = 'rank-1';
-                else if (idx === 1) tr.className = 'rank-2';
-                else if (idx === 2) tr.className = 'rank-3';
-
-                const badgeClass = res.team.genre === '댄스' ? 'badge-dance' : 'badge-sing';
-
-                tr.innerHTML = `
-                    <td><b>${idx + 1}위</b></td>
-                    <td>${res.team.name}</td>
-                    <td><span class="badge ${badgeClass}">${res.team.genre}</span></td>
-                    <td><b>${res.finalTotal}점</b></td>
-                    <td style="font-size:0.75rem; color:#64748b;">${res.excludedStr}</td>
-                `;
-                rankBody.appendChild(tr);
-            });
-        }
-
-        function downloadCSV() {
-            let csvContent = "\uFEFF";
-            csvContent += "순위,참가팀,장르,최종총점(최고최저제외)\n";
-
-            const rows = document.querySelectorAll('#rankTableBody tr');
-            rows.forEach((tr) => {
-                const cols = tr.querySelectorAll('td');
-                if (cols.length > 0) {
-                    const rank = cols[0].innerText;
-                    const name = cols[1].innerText.replace(/,/g, '');
-                    const genre = cols[2].innerText;
-                    const total = cols[3].innerText;
-                    csvContent += `${rank},${name},${genre},${total}\n`;
-                }
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `영종고_장기자랑_최종순위.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
-</body>
-</html>
+            border-collapse: collapse
