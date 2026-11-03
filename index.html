@@ -381,7 +381,6 @@
     </div>
 
     <script>
-        // 참가팀 기본 정보
         const TEAMS = [
             { id: 1, name: "1팀 ([1반] 댄스)", genre: "댄스", title: "리센느-프리티걸, 트와이스-낙낙" },
             { id: 2, name: "2팀 ([2반] 댄스)", genre: "댄스", title: "소녀시대-Gee, 원더걸스-텔미" },
@@ -395,16 +394,11 @@
             { id: 10, name: "10팀 ([연합B] 댄스)", genre: "댄스", title: "Lah Pat-Rodeo, 효린-달리 (1/2반 연합)" }
         ];
 
-        // 기본 심사위원 명단
         let judges = ["최재호", "양장관", "정우철", "김은서", "이은지"];
-
         let currentJudge = judges[0];
         let currentTeamId = 1;
-
-        // 로컬스토리지 저장 구조: { judgeName: { teamId: { completeness, reaction, manner, bonus, total } } }
         let scoresData = JSON.parse(localStorage.getItem('yj_talent_scores') || '{}');
 
-        // 초기화
         window.onload = function() {
             renderJudgeTabs();
             renderTeamTabs();
@@ -415,7 +409,6 @@
         function renderJudgeTabs() {
             const container = document.getElementById('judgeTabs');
             container.innerHTML = '';
-
             judges.forEach(j => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${j === currentJudge ? 'active' : ''}`;
@@ -447,7 +440,6 @@
         function renderTeamTabs() {
             const container = document.getElementById('teamTabs');
             container.innerHTML = '';
-
             TEAMS.forEach(team => {
                 const btn = document.createElement('button');
                 const isCompleted = scoresData[currentJudge] && scoresData[currentJudge][team.id];
@@ -461,7 +453,6 @@
                 container.appendChild(btn);
             });
 
-            // 팀 상세 정보 출력
             const t = TEAMS.find(item => item.id === currentTeamId);
             document.getElementById('pTitle').innerText = t.name;
             document.getElementById('pDesc').innerText = `곡/제목: ${t.title}`;
@@ -500,7 +491,6 @@
             updateRankTable();
             alert(`${currentJudge} 심사위원님 - ${currentTeamId}번 팀 점수가 저장되었습니다!`);
 
-            // 다음 미채점 팀으로 자동 이동
             if (currentTeamId < 10) {
                 currentTeamId++;
                 renderTeamTabs();
@@ -533,7 +523,6 @@
                 let reactionSum = 0;
                 let mannerSum = 0;
 
-                // 각 심사위원의 점수 수집
                 Object.keys(scoresData).forEach(jName => {
                     if (scoresData[jName][team.id]) {
                         const s = scoresData[jName][team.id];
@@ -549,8 +538,8 @@
 
                 if (allScores.length >= 3) {
                     allScores.sort((a, b) => a - b);
-                    const min = allScores.shift(); // 최저점 제거
-                    const max = allScores.pop();   // 최고점 제거
+                    const min = allScores.shift();
+                    const max = allScores.pop();
                     finalTotal = allScores.reduce((acc, cur) => acc + cur, 0);
                     excludedStr = `최저 ${min} / 최고 ${max}`;
                 } else {
@@ -563,12 +552,10 @@
                     excludedStr,
                     completenessSum,
                     reactionSum,
-                    mannerSum,
-                    judgeCount: allScores.length + (allScores.length >= 3 ? 2 : 0)
+                    mannerSum
                 };
             });
 
-            // 순위 정렬: 총점 내림차순 ➔ 완성도 ➔ 호응도 ➔ 매너
             teamResults.sort((a, b) => {
                 if (b.finalTotal !== a.finalTotal) return b.finalTotal - a.finalTotal;
                 if (b.completenessSum !== a.completenessSum) return b.completenessSum - a.completenessSum;
@@ -596,12 +583,11 @@
         }
 
         function downloadCSV() {
-            let csvContent = "\uFEFF"; // UTF-8 BOM
-            csvContent += "순위,참가팀,장르,최종총점(최고최저제외),심사위원 수\n";
+            let csvContent = "\uFEFF";
+            csvContent += "순위,참가팀,장르,최종총점(최고최저제외)\n";
 
-            // 순위 데이터 추출
             const rows = document.querySelectorAll('#rankTableBody tr');
-            rows.forEach((tr, i) => {
+            rows.forEach((tr) => {
                 const cols = tr.querySelectorAll('td');
                 if (cols.length > 0) {
                     const rank = cols[0].innerText;
