@@ -365,4 +365,419 @@
 
         table {
             width: 100%;
-            border-collapse: collapse
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .rank-1 { background-color: #fef3c7 !important; font-weight: bold; }
+        .rank-2 { background-color: #f1f5f9 !important; font-weight: bold; }
+        .rank-3 { background-color: #ffedd5 !important; font-weight: bold; }
+
+        .rules-box {
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.5;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>2026 ACADEMIC YEAR 🌟 YEONGJONG GOT TALENT (IN PYEONGCHANG)</h1>
+        <div class="header-sub">Real-time Smart Judging and Aggregation System</div>
+    </header>
+
+    <div class="container">
+
+        <!-- STEP 1. 심사위원 선택 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-dot"></span>
+                    STEP 1. 심사위원 선택
+                </div>
+                <button class="btn-add-judge" onclick="addCustomJudge()">+ 위원 추가</button>
+            </div>
+            <div class="judge-grid" id="judgeGrid"></div>
+        </div>
+
+        <!-- STEP 2. 팀 선택 -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-title">
+                    <span class="step-dot" style="background-color: #f97316;"></span>
+                    STEP 2. 심사할 팀 선택 (10개 팀)
+                </div>
+            </div>
+            <div class="team-grid" id="teamGrid"></div>
+        </div>
+
+        <!-- STEP 3. 채점 입력 -->
+        <div class="step-card">
+            <div class="active-team-banner">
+                <div>
+                    <span class="banner-num" id="bNum">1번 팀</span>
+                    <div class="banner-title" id="bTitle">[1반] 댄스</div>
+                    <div class="banner-desc" id="bDesc">곡 정보 로딩 중...</div>
+                </div>
+                <div class="banner-genre" id="bGenre">댄스</div>
+            </div>
+
+            <!-- 완성도 -->
+            <div class="score-card">
+                <div class="score-card-header">
+                    <span class="score-card-title">⭐ 완성도 및 준비도 (최대 40점)</span>
+                    <span class="score-card-val" id="valCompleteness">30점</span>
+                </div>
+                <div class="score-controls">
+                    <button class="btn-minus-plus" onclick="adjustScore('completeness', -1)">-</button>
+                    <input type="range" id="scoreCompleteness" min="0" max="40" value="30" oninput="updateScoreUI('completeness')">
+                    <button class="btn-minus-plus" onclick="adjustScore('completeness', 1)">+</button>
+                </div>
+            </div>
+
+            <!-- 호응도 -->
+            <div class="score-card">
+                <div class="score-card-header">
+                    <span class="score-card-title">👥 관객 호응도 (최대 30점)</span>
+                    <span class="score-card-val" id="valReaction">20점</span>
+                </div>
+                <div class="score-controls">
+                    <button class="btn-minus-plus" onclick="adjustScore('reaction', -1)">-</button>
+                    <input type="range" id="scoreReaction" min="0" max="30" value="20" oninput="updateScoreUI('reaction')">
+                    <button class="btn-minus-plus" onclick="adjustScore('reaction', 1)">+</button>
+                </div>
+            </div>
+
+            <!-- 무대 매너 -->
+            <div class="score-card">
+                <div class="score-card-header">
+                    <span class="score-card-title">🥑 무대 매너 (최대 20점)</span>
+                    <span class="score-card-val" id="valManner">15점</span>
+                </div>
+                <div class="score-controls">
+                    <button class="btn-minus-plus" onclick="adjustScore('manner', -1)">-</button>
+                    <input type="range" id="scoreManner" min="0" max="20" value="15" oninput="updateScoreUI('manner')">
+                    <button class="btn-minus-plus" onclick="adjustScore('manner', 1)">+</button>
+                </div>
+            </div>
+
+            <!-- 가산점 -->
+            <div class="score-card bonus">
+                <div class="score-card-header">
+                    <span class="score-card-title" style="color:#d97706;">🪄 가산점 (의상/독창성) (최대 10점)</span>
+                    <span class="score-card-val" id="valBonus" style="color:#d97706;">5점</span>
+                </div>
+                <div class="score-controls">
+                    <button class="btn-minus-plus" onclick="adjustScore('bonus', -1)">-</button>
+                    <input type="range" id="scoreBonus" min="0" max="10" value="5" oninput="updateScoreUI('bonus')">
+                    <button class="btn-minus-plus" onclick="adjustScore('bonus', 1)">+</button>
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="saveScore()">현재 팀 점수 저장</button>
+        </div>
+
+        <!-- STEP 4. 실시간 순위표 -->
+        <div class="step-card">
+            <div class="step-title" style="margin-bottom: 12px;">
+                <span class="step-dot" style="background-color: #10b981;"></span>
+                🏆 실시간 전체 순위 (1~10위)
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>순위</th>
+                            <th>팀명</th>
+                            <th>장르</th>
+                            <th>총점</th>
+                            <th>제외 점수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="rules-box">
+                📌 <b>집계 규칙:</b><br>
+                • 심사위원 3명 이상 채점 시 <b>최고점 1개 & 최저점 1개 자동 제외</b> 후 총점 합산<br>
+                • 동점 발생 시: <b>완성도 ➔ 관객 호응도 ➔ 무대 매너</b> 순으로 상위 결정
+            </div>
+
+            <button class="btn-csv" onclick="downloadCSV()">📊 전체 집계 CSV 다운로드</button>
+            <button class="btn-reset" onclick="resetAllData()">🗑️ 데이터 전체 초기화</button>
+        </div>
+
+    </div>
+
+    <script>
+        const TEAMS = [
+            { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸, 트와이스-낙낙" },
+            { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee, 원더걸스-텔미" },
+            { id: 3, name: "[3반] 댄스", genre: "댄스", title: "뉴진스-OMG 뽕짝, 코르티스-아사이" },
+            { id: 4, name: "[6반 김지승] 노래", genre: "노래", title: "김지승-Aventador&beatbox party" },
+            { id: 5, name: "[7반] 댄스", genre: "댄스", title: "티아라-뽀삐뽀삐, 빅뱅-판타스틱베이비 외" },
+            { id: 6, name: "[9반] 댄스", genre: "댄스", title: "크레용팝-어이, 싹쓰리-다시 여기 바닷가" },
+            { id: 7, name: "[10반] 댄스", genre: "댄스", title: "트와이스-TT, 에이티즈-BAD" },
+            { id: 8, name: "[3반 조은성] 노래", genre: "노래", title: "너드커넥션-그대만 있다면" },
+            { id: 9, name: "[연합A] 댄스", genre: "댄스", title: "코르티스, 영파씨, 레드벨벳 (2/3/7/10반)" },
+            { id: 10, name: "[연합B] 댄스", genre: "댄스", title: "Lah Pat-Rodeo, 효린-달리 (1/2반)" }
+        ];
+
+        let judges = ["최재호", "양장관", "정우철", "김은서", "이은지"];
+        let currentJudge = judges[0];
+        let currentTeamId = 1;
+        let scoresData = JSON.parse(localStorage.getItem('yj_talent_scores') || '{}');
+
+        window.onload = function() {
+            renderJudgeGrid();
+            renderTeamGrid();
+            loadCurrentScore();
+            updateRankTable();
+        };
+
+        function renderJudgeGrid() {
+            const grid = document.getElementById('judgeGrid');
+            grid.innerHTML = '';
+
+            judges.forEach(j => {
+                const btn = document.createElement('button');
+                const judgeScores = scoresData[j] || {};
+                const count = Object.keys(judgeScores).length;
+
+                btn.className = `judge-btn ${j === currentJudge ? 'active' : ''}`;
+                btn.innerHTML = `👤 ${j} <span class="badge-count">${count}/10팀</span>`;
+                btn.onclick = () => {
+                    currentJudge = j;
+                    renderJudgeGrid();
+                    renderTeamGrid();
+                    loadCurrentScore();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function addCustomJudge() {
+            const name = prompt("추가할 심사위원 성함을 입력하세요:");
+            if (name && name.trim() !== "") {
+                const cleanName = name.trim();
+                if (!judges.includes(cleanName)) {
+                    judges.push(cleanName);
+                    currentJudge = cleanName;
+                    renderJudgeGrid();
+                    renderTeamGrid();
+                    loadCurrentScore();
+                }
+            }
+        }
+
+        function renderTeamGrid() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = '';
+
+            TEAMS.forEach(team => {
+                const card = document.createElement('div');
+                card.className = `team-card ${team.id === currentTeamId ? 'active' : ''}`;
+                card.onclick = () => {
+                    currentTeamId = team.id;
+                    renderTeamGrid();
+                    loadCurrentScore();
+                };
+
+                card.innerHTML = `
+                    <span class="team-badge-num">${team.id}팀</span>
+                    <div class="team-card-title">${team.name}</div>
+                    <div class="team-card-sub">${team.title}</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // 현재 팀 락커 바
+            const t = TEAMS.find(item => item.id === currentTeamId);
+            document.getElementById('bNum').innerText = `${t.id}번 팀`;
+            document.getElementById('bTitle').innerText = t.name;
+            document.getElementById('bDesc').innerText = t.title;
+            document.getElementById('bGenre').innerText = t.genre;
+        }
+
+        function adjustScore(field, delta) {
+            const input = document.getElementById(`score${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            let newVal = parseInt(input.value) + delta;
+            if (newVal >= parseInt(input.min) && newVal <= parseInt(input.max)) {
+                input.value = newVal;
+                updateScoreUI(field);
+            }
+        }
+
+        function updateScoreUI(field) {
+            const capField = field.charAt(0).toUpperCase() + field.slice(1);
+            const val = document.getElementById(`score${capField}`).value;
+            document.getElementById(`val${capField}`).innerText = `${val}점`;
+        }
+
+        function saveScore() {
+            const completeness = parseInt(document.getElementById('scoreCompleteness').value);
+            const reaction = parseInt(document.getElementById('scoreReaction').value);
+            const manner = parseInt(document.getElementById('scoreManner').value);
+            const bonus = parseInt(document.getElementById('scoreBonus').value);
+            const total = completeness + reaction + manner + bonus;
+
+            if (!scoresData[currentJudge]) {
+                scoresData[currentJudge] = {};
+            }
+
+            scoresData[currentJudge][currentTeamId] = { completeness, reaction, manner, bonus, total };
+            localStorage.setItem('yj_talent_scores', JSON.stringify(scoresData));
+
+            renderJudgeGrid();
+            renderTeamGrid();
+            updateRankTable();
+            alert(`${currentJudge} 위원님 - ${currentTeamId}번 팀 점수가 저장되었습니다!`);
+
+            if (currentTeamId < 10) {
+                currentTeamId++;
+                renderTeamGrid();
+                loadCurrentScore();
+            }
+        }
+
+        function loadCurrentScore() {
+            const judgeScores = scoresData[currentJudge] || {};
+            const score = judgeScores[currentTeamId] || { completeness: 30, reaction: 20, manner: 15, bonus: 5 };
+
+            document.getElementById('scoreCompleteness').value = score.completeness;
+            document.getElementById('scoreReaction').value = score.reaction;
+            document.getElementById('scoreManner').value = score.manner;
+            document.getElementById('scoreBonus').value = score.bonus;
+
+            updateScoreUI('completeness');
+            updateScoreUI('reaction');
+            updateScoreUI('manner');
+            updateScoreUI('bonus');
+        }
+
+        function updateRankTable() {
+            const rankBody = document.getElementById('rankTableBody');
+            rankBody.innerHTML = '';
+
+            let teamResults = TEAMS.map(team => {
+                let allScores = [];
+                let completenessSum = 0;
+                let reactionSum = 0;
+                let mannerSum = 0;
+
+                Object.keys(scoresData).forEach(jName => {
+                    if (scoresData[jName][team.id]) {
+                        const s = scoresData[jName][team.id];
+                        allScores.push(s.total);
+                        completenessSum += s.completeness;
+                        reactionSum += s.reaction;
+                        mannerSum += s.manner;
+                    }
+                });
+
+                let finalTotal = 0;
+                let excludedStr = "-";
+
+                if (allScores.length >= 3) {
+                    allScores.sort((a, b) => a - b);
+                    const min = allScores.shift();
+                    const max = allScores.pop();
+                    finalTotal = allScores.reduce((acc, cur) => acc + cur, 0);
+                    excludedStr = `최저 ${min} / 최고 ${max}`;
+                } else {
+                    finalTotal = allScores.reduce((acc, cur) => acc + cur, 0);
+                }
+
+                return {
+                    team,
+                    finalTotal,
+                    excludedStr,
+                    completenessSum,
+                    reactionSum,
+                    mannerSum
+                };
+            });
+
+            teamResults.sort((a, b) => {
+                if (b.finalTotal !== a.finalTotal) return b.finalTotal - a.finalTotal;
+                if (b.completenessSum !== a.completenessSum) return b.completenessSum - a.completenessSum;
+                if (b.reactionSum !== a.reactionSum) return b.reactionSum - a.reactionSum;
+                return b.mannerSum - a.mannerSum;
+            });
+
+            teamResults.forEach((res, idx) => {
+                const tr = document.createElement('tr');
+                if (idx === 0) tr.className = 'rank-1';
+                else if (idx === 1) tr.className = 'rank-2';
+                else if (idx === 2) tr.className = 'rank-3';
+
+                tr.innerHTML = `
+                    <td><b>${idx + 1}위</b></td>
+                    <td><b>${res.team.name}</b></td>
+                    <td>${res.team.genre}</td>
+                    <td><b style="color:#2563eb;">${res.finalTotal}점</b></td>
+                    <td style="font-size:0.75rem; color:#64748b;">${res.excludedStr}</td>
+                `;
+                rankBody.appendChild(tr);
+            });
+        }
+
+        function downloadCSV() {
+            let csvContent = "\uFEFF";
+            csvContent += "순위,팀명,장르,최종총점(최고최저제외)\n";
+
+            const rows = document.querySelectorAll('#rankTableBody tr');
+            rows.forEach((tr) => {
+                const cols = tr.querySelectorAll('td');
+                if (cols.length > 0) {
+                    const rank = cols[0].innerText;
+                    const name = cols[1].innerText.replace(/,/g, '');
+                    const genre = cols[2].innerText;
+                    const total = cols[3].innerText;
+                    csvContent += `${rank},${name},${genre},${total}\n`;
+                }
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `YEONGJONG_TALENT_RANKING.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetAllData() {
+            if (confirm("저장된 모든 심사점수를 초기화하시겠습니까?")) {
+                localStorage.removeItem('yj_talent_scores');
+                scoresData = {};
+                renderJudgeGrid();
+                renderTeamGrid();
+                loadCurrentScore();
+                updateRankTable();
+                alert("초기화가 완료되었습니다.");
+            }
+        }
+    </script>
+</body>
+</html>
