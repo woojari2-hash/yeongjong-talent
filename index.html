@@ -184,9 +184,9 @@
         var curTeam = 1;
         var scores = {};
 
-        // 파이어베이스 초기화
+        // 🔗 본인의 파이어베이스 데이터베이스 URL이 정확히 입력된 설정 부분
         firebase.initializeApp({
-            databaseURL: "https://yeongjong-talent-default-rtdb.firebaseio.com/"
+            databaseURL: "https://yeongjong-godtalent-default-rtdb.firebaseio.com/"
         });
         var db = firebase.database();
 
@@ -338,7 +338,7 @@
                 total: tot
             }, function(error) {
                 if(error) {
-                    alert("저장 실패 (권한 오류 또는 네트워크 확인): " + error.message);
+                    alert("저장 실패 (네트워크 확인): " + error.message);
                 } else {
                     alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 실시간 서버에 저장되었습니다!');
                     if(curTeam < 10) {
@@ -463,7 +463,7 @@
                     }
                     html += '</tr>';
                 }
-                tbl.innerHTML = html;
+                tbl.html = html;
                 document.getElementById('adminModal').style.display = 'flex';
             } else if(pw !== null) {
                 alert("비밀번호가 틀렸습니다.");
