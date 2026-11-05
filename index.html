@@ -9,10 +9,6 @@
     <meta name="apple-mobile-web-app-title" content="영종 갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- Firebase SDK (실시간 데이터 동기화용) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f1f5f9; color: #0f172a; padding-bottom: 40px; }
@@ -48,4 +44,122 @@
         .btn-main { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 6px; }
         .btn-sub-reset { width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 10px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 6px; }
         .btn-csv { background: #10b981; color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-total-reset { background: #ef4444; color: white;
+        .btn-total-reset { background: #ef4444; color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: center; margin-top: 8px; }
+        th, td { padding: 8px 4px; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; color: #475569; }
+        .rank-1 { background-color: #fef3c7 !important; font-weight: bold; }
+        .rank-2 { background-color: #f1f5f9 !important; font-weight: bold; }
+        .rank-3 { background-color: #ffedd5 !important; font-weight: bold; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 16px; }
+        .modal-body { background: white; border-radius: 14px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; padding: 16px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>2026 ACADEMIC YEAR 🌟 YEONGJONG GOT TALENT (IN PYEONGCHANG)</h1>
+        <div class="header-sub">Smart Judging System</div>
+        <button class="btn-admin" onclick="openAdmin()">🔐 관리자</button>
+    </header>
+
+    <div class="container">
+        <!-- STEP 1 -->
+        <div class="card">
+            <div class="title">
+                <span>👤 STEP 1. 심사위원 선택</span>
+                <button class="j-btn" style="padding:4px 10px; font-size:0.75rem;" onclick="addJudge()">+ 위원 추가</button>
+            </div>
+            <div class="judge-scroll" id="judgeGrid"></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="card">
+            <div class="title"><span>🎭 STEP 2. 팀 선택 (10개 팀)</span></div>
+            <div class="team-grid" id="teamGrid"></div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="card">
+            <div class="banner">
+                <div>
+                    <span class="t-num" id="bNum" style="background:#f59e0b; color:#0f172a;">1번 팀</span>
+                    <div style="font-size: 1rem; font-weight: bold;" id="bTitle">[1반] 댄스</div>
+                    <div style="font-size: 0.75rem; color:#94a3b8;" id="bDesc">로딩중...</div>
+                </div>
+                <div style="background:#334155; padding:4px 8px; border-radius:6px; font-size:0.75rem;" id="bGenre">댄스</div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>⭐ 완성도 및 준비도 (40점)</span><span class="s-val" id="valCompleteness">30점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('completeness', -1)">-</button>
+                    <input type="range" id="scoreCompleteness" min="0" max="40" value="30" oninput="ui('completeness')">
+                    <button class="btn-pm" onclick="adj('completeness', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>👥 관객 호응도 (30점)</span><span class="s-val" id="valReaction">20점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('reaction', -1)">-</button>
+                    <input type="range" id="scoreReaction" min="0" max="30" value="20" oninput="ui('reaction')">
+                    <button class="btn-pm" onclick="adj('reaction', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group">
+                <div class="s-head"><span>🥑 무대 매너 (20점)</span><span class="s-val" id="valManner">15점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('manner', -1)">-</button>
+                    <input type="range" id="scoreManner" min="0" max="20" value="15" oninput="ui('manner')">
+                    <button class="btn-pm" onclick="adj('manner', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="s-group" style="background:#fffbeb; border-color:#fde68a;">
+                <div class="s-head"><span style="color:#d97706;">🪄 가산점 (10점)</span><span class="s-val" id="valBonus" style="color:#d97706;">5점</span></div>
+                <div class="s-ctrl">
+                    <button class="btn-pm" onclick="adj('bonus', -1)">-</button>
+                    <input type="range" id="scoreBonus" min="0" max="10" value="5" oninput="ui('bonus')">
+                    <button class="btn-pm" onclick="adj('bonus', 1)">+</button>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="saveScore()">현재 팀 점수 저장</button>
+            <button class="btn-sub-reset" onclick="resetTeam()">🔄 이 팀 점수 초기화</button>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="card">
+            <div class="title"><span>🏆 실시간 전체 순위 (1~10위)</span></div>
+            <table>
+                <thead>
+                    <tr><th>순위</th><th>팀명</th><th>장르</th><th>총점</th><th>제외점수</th></tr>
+                </thead>
+                <tbody id="rankBody"></tbody>
+            </table>
+            <button class="btn-csv" onclick="downCSV()">📊 전체 집계 CSV 다운로드</button>
+            <button class="btn-total-reset" onclick="resetAll()">🗑️ 데이터 전체 초기화</button>
+        </div>
+    </div>
+
+    <!-- 관리자 모달 -->
+    <div class="modal" id="adminModal">
+        <div class="modal-body">
+            <div class="title"><span>🔐 관리자 모드</span> <button class="j-btn" onclick="closeAdmin()">닫기</button></div>
+            <table id="adminTable"></table>
+            <button class="btn-total-reset" style="margin-top:14px;" onclick="resetAll()">전체 데이터 강제 초기화</button>
+        </div>
+    </div>
+
+    <script>
+        var TEAMS = [
+            { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸 외" },
+            { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee 외" },
+            { id: 3, name: "[3반] 댄스", genre: "댄ส", title: "뉴진스-OMG 외" },
+            { id: 4, name: "[6반 김지승] 노래", genre: "노래", title: "김지승-Aventador" },
+            { id: 5, name: "[7반] 댄스", genre: "댄스", title: "티아라-뽀삐뽀삐 외" },
+            { id: 6, name: "[9반] 댄스", genre:
