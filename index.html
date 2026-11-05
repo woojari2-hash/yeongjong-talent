@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 YEONGJONG GOT TALENT</title>
 
-    <!-- 홈 화면 추가 시 트로피 아이콘 고정 설정 -->
     <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAHdElNRQfnBQgQExa+u3J5AAABH0lEQVRYw+3WMUvDQBDG8d8l5qBCEVqcHFrB0cFFKDr4AnRxV3QRBP8AHVwcHEQoODm4ig5Ounh1i0oRXARxUEwcFPEOudgkvM2lS/hwn1zu3uV9L1/u5d6j2c0W9T4a1b0F6CjN7fD4zG1B903s80v7y5FhN87zS1wW7WqfR06Hw249M2x4P0P3jM1rJ91Z/bX6fLhG11G4H9uLqL1V6y/y9t824X89vQ5A+uGf181yS8uV1m3D0wS3rR0QO8G6x67+6QkM28l7Y73vV7aQ3bZc33q7pW+/lZ6XjY50q7R2a2j7M969T2e2lX66H/u/rC+V0fKqYd0v4AK7hH9b4t41LAAAAAElFTkSuQmCC">
-    <meta name="apple-mobile-web-app-title" content="영종갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1e1b4b">
 
-    <!-- Firebase 실시간 데이터베이스 SDK -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -164,13 +162,6 @@
     </div>
 
     <script>
-        // 파이어베이스 실시간 데이터베이스 연동 설정
-        var firebaseConfig = {
-            databaseURL: "https://yeongjong-talent-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        var db = firebase.database();
-
         var TEAMS = [
             { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸 외" },
             { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee 외" },
@@ -189,14 +180,13 @@
         var curTeam = 1;
         var scores = {};
 
-        // 실시간 클라우드 동기화 리스너
-        db.ref('scores').on('value', function(snapshot) {
-            scores = snapshot.val() || {};
-            renderAll();
-        }, function(error) {
-            console.error(error);
+        // 파이어베이스 초기화
+        firebase.initializeApp({
+            databaseURL: "https://yeongjong-talent-default-rtdb.firebaseio.com/"
         });
+        var db = firebase.database();
 
+        // 1. 페이지 로드 즉시 화면을 먼저 그림 (네트워크 대기 없음)
         function renderAll() {
             try {
                 renderJudges();
@@ -204,9 +194,24 @@
                 loadScore();
                 renderRank();
             } catch (e) {
-                console.error(e);
+                console.error("Render Error:", e);
             }
         }
+
+        // 실행 보장
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderAll);
+        } else {
+            renderAll();
+        }
+
+        // 2. 파이어베이스 실시간 연동 (데이터가 들어오거나 변경될 때 자동 반영)
+        db.ref('scores').on('value', function(snapshot) {
+            scores = snapshot.val() || {};
+            renderAll();
+        }, function(error) {
+            console.error("Firebase Error:", error);
+        });
 
         function renderJudges() {
             var grid = document.getElementById('judgeGrid');
