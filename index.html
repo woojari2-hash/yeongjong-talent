@@ -4,24 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 YEONGJONG GOT TALENT</title>
+
+    <!-- 홈 화면 추가 시 트로피 아이콘 고정 설정 -->
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAHdElNRQfnBQgQExa+u3J5AAABH0lEQVRYw+3WMUvDQBDG8d8l5qBCEVqcHFrB0cFFKDr4AnRxV3QRBP8AHVwcHEQoODm4ig5Ounh1i0oRXARxUEwcFPEOudgkvM2lS/hwn1zu3uV9L1/u5d6j2c0W9T4a1b0F6CjN7fD4zG1B903s80v7y5FhN87zS1wW7WqfR06Hw249M2x4P0P3jM1rJ91Z/bX6fLhG11G4H9uLqL1V6y/y9t824X89vQ5A+uGf181yS8uV1m3D0wS3rR0QO8G6x67+6QkM28l7Y73vV7aQ3bZc33q7pW+/lZ6XjY50q7R2a2j7M969T2e2lX66H/u/rC+V0fKqYd0v4AK7hH9b4t41LAAAAAElFTkSuQmCC">
+    <meta name="apple-mobile-web-app-title" content="영종갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e1b4b">
+
+    <!-- Firebase 실시간 데이터베이스 SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f1f5f9; color: #0f172a; padding-bottom: 40px; }
-        header { background: #1e1b4b; color: white; padding: 20px; text-align: center; position: relative; }
-        h1 { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
-        .header-sub { font-size: 0.75rem; color: #c7d2fe; }
-        .btn-admin { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 6px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; color: #f8fafc; }
+        .header-sub { font-size: 0.75rem; color: #c7d2fe; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .live-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; }
+        .btn-admin { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 6px 10px; border-radius: 14px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
         .container { max-width: 800px; margin: 0 auto; padding: 16px; }
-        .card { background: #ffffff; border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
-        .title { font-size: 0.95rem; font-weight: bold; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: #ffffff; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
         
         .judge-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; min-height: 40px; }
         .j-btn { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: #475569; white-space: nowrap; cursor: pointer; }
         .j-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
         
-        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; min-height: 100px; }
+        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; min-height: 120px; }
         @media(min-width: 500px) { .team-grid { grid-template-columns: repeat(5, 1fr); } }
         .t-card { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px; cursor: pointer; text-align: left; }
         .t-card.active { background: #fff7ed; border-color: #f97316; }
@@ -57,16 +68,16 @@
 <body>
 
     <header>
-        <h1>2026 YEONGJONG GOT TALENT</h1>
-        <div class="header-sub">Smart Judging System</div>
-        <button class="btn-admin" onclick="openAdmin()">관리자</button>
+        <h1>2026 ACADEMIC YEAR 🌟 YEONGJONG GOT TALENT</h1>
+        <div class="header-sub"><span class="live-dot"></span> 클라우드 실시간 동기화 시스템</div>
+        <button class="btn-admin" onclick="openAdmin()">🔐 관리자</button>
     </header>
 
     <div class="container">
         <!-- STEP 1 -->
         <div class="card">
             <div class="title">
-                <span>심사위원 선택</span>
+                <span>👤 STEP 1. 심사위원 선택</span>
                 <button class="j-btn" style="padding:4px 10px; font-size:0.75rem;" onclick="addJudge()">+ 위원 추가</button>
             </div>
             <div class="judge-scroll" id="judgeGrid"></div>
@@ -74,7 +85,7 @@
 
         <!-- STEP 2 -->
         <div class="card">
-            <div class="title"><span>팀 선택 (10개 팀)</span></div>
+            <div class="title"><span>🎭 STEP 2. 팀 선택 (10개 팀)</span></div>
             <div class="team-grid" id="teamGrid"></div>
         </div>
 
@@ -83,14 +94,14 @@
             <div class="banner">
                 <div>
                     <span class="t-num" id="bNum" style="background:#f59e0b; color:#0f172a;">1번 팀</span>
-                    <div style="font-size: 0.95rem; font-weight: bold;" id="bTitle">[1반] 댄스</div>
+                    <div style="font-size: 1rem; font-weight: bold;" id="bTitle">[1반] 댄스</div>
                     <div style="font-size: 0.75rem; color:#94a3b8;" id="bDesc">로딩중...</div>
                 </div>
                 <div style="background:#334155; padding:4px 8px; border-radius:6px; font-size:0.75rem;" id="bGenre">댄스</div>
             </div>
 
             <div class="s-group">
-                <div class="s-head"><span>완성도 및 준비도 (40점)</span><span class="s-val" id="valCompleteness">30점</span></div>
+                <div class="s-head"><span>⭐ 완성도 및 준비도 (40점)</span><span class="s-val" id="valCompleteness">30점</span></div>
                 <div class="s-ctrl">
                     <button class="btn-pm" onclick="adj('completeness', -1)">-</button>
                     <input type="range" id="scoreCompleteness" min="0" max="40" value="30" oninput="ui('completeness')">
@@ -99,7 +110,7 @@
             </div>
 
             <div class="s-group">
-                <div class="s-head"><span>관객 호응도 (30점)</span><span class="s-val" id="valReaction">20점</span></div>
+                <div class="s-head"><span>👥 관객 호응도 (30점)</span><span class="s-val" id="valReaction">20점</span></div>
                 <div class="s-ctrl">
                     <button class="btn-pm" onclick="adj('reaction', -1)">-</button>
                     <input type="range" id="scoreReaction" min="0" max="30" value="20" oninput="ui('reaction')">
@@ -108,7 +119,7 @@
             </div>
 
             <div class="s-group">
-                <div class="s-head"><span>무대 매너 (20점)</span><span class="s-val" id="valManner">15점</span></div>
+                <div class="s-head"><span>🥑 무대 매너 (20점)</span><span class="s-val" id="valManner">15점</span></div>
                 <div class="s-ctrl">
                     <button class="btn-pm" onclick="adj('manner', -1)">-</button>
                     <input type="range" id="scoreManner" min="0" max="20" value="15" oninput="ui('manner')">
@@ -117,7 +128,7 @@
             </div>
 
             <div class="s-group" style="background:#fffbeb; border-color:#fde68a;">
-                <div class="s-head"><span style="color:#d97706;">가산점 (10점)</span><span class="s-val" id="valBonus" style="color:#d97706;">5점</span></div>
+                <div class="s-head"><span style="color:#d97706;">🪄 가산점 (10점)</span><span class="s-val" id="valBonus" style="color:#d97706;">5점</span></div>
                 <div class="s-ctrl">
                     <button class="btn-pm" onclick="adj('bonus', -1)">-</button>
                     <input type="range" id="scoreBonus" min="0" max="10" value="5" oninput="ui('bonus')">
@@ -125,34 +136,41 @@
                 </div>
             </div>
 
-            <button class="btn-main" onclick="saveScore()">현재 팀 점수 저장</button>
-            <button class="btn-sub-reset" onclick="resetTeam()">이 팀 점수 초기화</button>
+            <button class="btn-main" onclick="saveScore()">현재 팀 점수 실시간 서버 저장</button>
+            <button class="btn-sub-reset" onclick="resetTeam()">🔄 이 팀 점수 초기화</button>
         </div>
 
         <!-- STEP 4 -->
         <div class="card">
-            <div class="title"><span>실시간 전체 순위 (1~10위)</span></div>
+            <div class="title"><span>🏆 실시간 전체 순위 (1~10위)</span></div>
             <table>
                 <thead>
                     <tr><th>순위</th><th>팀명</th><th>장르</th><th>총점</th><th>제외점수</th></tr>
                 </thead>
                 <tbody id="rankBody"></tbody>
             </table>
-            <button class="btn-csv" onclick="downCSV()">전체 집계 CSV 다운로드</button>
-            <button class="btn-total-reset" onclick="resetAll()">데이터 전체 초기화</button>
+            <button class="btn-csv" onclick="downCSV()">📊 전체 집계 CSV 다운로드</button>
+            <button class="btn-total-reset" onclick="resetAll()">🗑️ 데이터 전체 초기화</button>
         </div>
     </div>
 
     <!-- 관리자 모달 -->
     <div class="modal" id="adminModal">
         <div class="modal-body">
-            <div class="title"><span>관리자 모드</span> <button class="j-btn" onclick="closeAdmin()">닫기</button></div>
+            <div class="title"><span>🔐 관리자 모드</span> <button class="j-btn" onclick="closeAdmin()">닫기</button></div>
             <table id="adminTable"></table>
             <button class="btn-total-reset" style="margin-top:14px;" onclick="resetAll()">전체 데이터 강제 초기화</button>
         </div>
     </div>
 
     <script>
+        // 파이어베이스 실시간 데이터베이스 연동 설정
+        var firebaseConfig = {
+            databaseURL: "https://yeongjong-talent-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.database();
+
         var TEAMS = [
             { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸 외" },
             { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee 외" },
@@ -171,10 +189,13 @@
         var curTeam = 1;
         var scores = {};
 
-        try {
-            var saved = localStorage.getItem('yj_talent_scores_v9');
-            if (saved) scores = JSON.parse(saved);
-        } catch(e) { scores = {}; }
+        // 실시간 클라우드 동기화 리스너
+        db.ref('scores').on('value', function(snapshot) {
+            scores = snapshot.val() || {};
+            renderAll();
+        }, function(error) {
+            console.error(error);
+        });
 
         function renderAll() {
             try {
@@ -186,9 +207,6 @@
                 console.error(e);
             }
         }
-
-        window.onload = renderAll;
-        setTimeout(renderAll, 100); // 안전장치
 
         function renderJudges() {
             var grid = document.getElementById('judgeGrid');
@@ -303,31 +321,34 @@
             var b = parseInt(document.getElementById('scoreBonus').value);
             var tot = c + r + m + b;
 
-            if(!scores[curJudge]) scores[curJudge] = {};
-            scores[curJudge][curTeam] = { completeness: c, reaction: r, manner: m, bonus: b, total: tot };
-
-            try { localStorage.setItem('yj_talent_scores_v9', JSON.stringify(scores)); } catch(e){}
-
-            renderAll();
-            alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 저장되었습니다!');
-
-            if(curTeam < 10) {
-                curTeam++;
-                renderTeams();
-                loadScore();
-            }
+            db.ref('scores/' + curJudge + '/' + curTeam).set({
+                completeness: c,
+                reaction: r,
+                manner: m,
+                bonus: b,
+                total: tot
+            }, function(error) {
+                if(error) {
+                    alert("저장에 실패했습니다. 네트워크를 확인해주세요.");
+                } else {
+                    alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 실시간 동기화되었습니다!');
+                    if(curTeam < 10) {
+                        curTeam++;
+                        renderTeams();
+                        loadScore();
+                    }
+                }
+            });
         }
 
         function resetTeam() {
             if(confirm(curTeam + '번 팀 점수를 초기화하시겠습니까?')) {
-                if(scores[curJudge] && scores[curJudge][curTeam]) {
-                    delete scores[curJudge][curTeam];
-                    try { localStorage.setItem('yj_talent_scores_v9', JSON.stringify(scores)); } catch(e){}
-                    renderAll();
-                    alert('초기화되었습니다.');
-                } else {
-                    alert('저장된 점수가 없습니다.');
-                }
+                db.ref('scores/' + curJudge + '/' + curTeam).remove(function(error) {
+                    if(!error) {
+                        loadScore();
+                        alert('초기화되었습니다.');
+                    }
+                });
             }
         }
 
@@ -410,11 +431,10 @@
 
         function resetAll() {
             if(confirm("모든 데이터를 초기화하시겠습니까?")) {
-                try { localStorage.removeItem('yj_talent_scores_v9'); } catch(e){}
-                scores = {};
-                renderAll();
-                closeAdmin();
-                alert("초기화되었습니다.");
+                db.ref('scores').remove(function() {
+                    closeAdmin();
+                    alert("모든 데이터가 초기화되었습니다.");
+                });
             }
         }
 
