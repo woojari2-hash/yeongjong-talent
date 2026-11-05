@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 YEONGJONG GOT TALENT</title>
 
-    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAHdElNRQfnBQgQExa+u3J5AAABH0lEQVRYw+3WMUvDQBDG8d8l5qBCEVqcHFrB0cFFKDr4AnRxV3QRBP8AHVwcHEQoODm4ig5Ounh1i0oRXARxUEwcFPEOudgkvM2lS/hwn1zu3uV9L1/u5d6j2c0W9T4a1b0F6CjN7fD4zG1B903s80v7y5FhN87zS1wW7WqfR06Hw249M2x4P0P3jM1rJ91Z/bX6fLhG11G4H9uLqL1V6y/y9t824X89vQ5A+uGf181yS8uV1m3D0wS3rR0QO8G6x67+6QkM28l7Y73vV7aQ3bZc33q7pW+/lZ6XjY50q7R2a2j7M969T2e2lX66H/u/rC+V0fKqYd0v4AK7hH9b4t41LAAAAAElFTkSuQmCC">
+    <!-- 홈 화면 추가 시 완벽하게 트로피 아이콘으로 표시되는 SVG 포맷 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231e1b4b'/><text x='50%' y='70%' font-size='65' text-anchor='middle'>🏆</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='80%' font-size='80' text-anchor='middle'>🏆</text></svg>">
+    
+    <meta name="apple-mobile-web-app-title" content="영종갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1e1b4b">
@@ -186,7 +190,7 @@
         });
         var db = firebase.database();
 
-        // 1. 페이지 로드 즉시 화면을 먼저 그림 (네트워크 대기 없음)
+        // 1. 즉시 화면 렌더링 함수
         function renderAll() {
             try {
                 renderJudges();
@@ -198,19 +202,19 @@
             }
         }
 
-        // 실행 보장
+        // 로드 직후 바로 실행
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', renderAll);
         } else {
             renderAll();
         }
 
-        // 2. 파이어베이스 실시간 연동 (데이터가 들어오거나 변경될 때 자동 반영)
+        // 2. 실시간 데이터 동기화 리스너
         db.ref('scores').on('value', function(snapshot) {
             scores = snapshot.val() || {};
             renderAll();
         }, function(error) {
-            console.error("Firebase Error:", error);
+            console.error("Firebase Read Error:", error);
         });
 
         function renderJudges() {
@@ -334,9 +338,9 @@
                 total: tot
             }, function(error) {
                 if(error) {
-                    alert("저장에 실패했습니다. 네트워크를 확인해주세요.");
+                    alert("저장 실패 (권한 오류 또는 네트워크 확인): " + error.message);
                 } else {
-                    alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 실시간 동기화되었습니다!');
+                    alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 실시간 서버에 저장되었습니다!');
                     if(curTeam < 10) {
                         curTeam++;
                         renderTeams();
