@@ -20,11 +20,11 @@
         .card { background: #ffffff; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
         
-        .judge-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .judge-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; min-height: 40px; }
         .j-btn { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: #475569; white-space: nowrap; cursor: pointer; }
         .j-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
         
-        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; min-height: 120px; }
         @media(min-width: 500px) { .team-grid { grid-template-columns: repeat(5, 1fr); } }
         .t-card { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px; cursor: pointer; text-align: left; }
         .t-card.active { background: #fff7ed; border-color: #f97316; }
@@ -149,17 +149,4 @@
     <!-- 관리자 모달 -->
     <div class="modal" id="adminModal">
         <div class="modal-body">
-            <div class="title"><span>🔐 관리자 모드</span> <button class="j-btn" onclick="closeAdmin()">닫기</button></div>
-            <table id="adminTable"></table>
-            <button class="btn-total-reset" style="margin-top:14px;" onclick="resetAll()">전체 데이터 강제 초기화</button>
-        </div>
-    </div>
-
-    <script>
-        var TEAMS = [
-            { id: 1, name: "[1반] 댄스", genre: "댄스", title: "리센느-프리티걸 외" },
-            { id: 2, name: "[2반] 댄스", genre: "댄스", title: "소녀시대-Gee 외" },
-            { id: 3, name: "[3반] 댄스", genre: "댄ส", title: "뉴진스-OMG 외" },
-            { id: 4, name: "[6반 김지승] 노래", genre: "노래", title: "김지승-Aventador" },
-            { id: 5, name: "[7반] 댄스", genre: "댄스", title: "티아라-뽀삐뽀삐 외" },
-            { id: 6, name: "[9반] 댄스", genre:
+            <div class="title"><span>🔐 관리자 모드</span> <button class="
