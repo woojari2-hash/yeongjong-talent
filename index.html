@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 YEONGJONG GOT TALENT</title>
 
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e1b4b'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>🏆</text></svg>">
-    <meta name="apple-mobile-web-app-title" content="영종 갓탤런트">
+    <!-- 홈 화면 추가 시 트로피 아이콘 설정 (아이폰 및 안드로이드 공통) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231e1b4b'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>🏆</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='80%' font-size='80' text-anchor='middle'>🏆</text></svg>">
+    
+    <meta name="apple-mobile-web-app-title" content="영종갓탤런트">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e1b4b">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -175,7 +181,7 @@
         var scores = {};
 
         try {
-            var saved = localStorage.getItem('yj_talent_scores_v5');
+            var saved = localStorage.getItem('yj_talent_scores_v6');
             if (saved) scores = JSON.parse(saved);
         } catch(e) { scores = {}; }
 
@@ -319,7 +325,7 @@
             if(!scores[curJudge]) scores[curJudge] = {};
             scores[curJudge][curTeam] = { completeness: c, reaction: r, manner: m, bonus: b, total: tot };
 
-            try { localStorage.setItem('yj_talent_scores_v5', JSON.stringify(scores)); } catch(e){}
+            try { localStorage.setItem('yj_talent_scores_v6', JSON.stringify(scores)); } catch(e){}
 
             renderAll();
             alert(curJudge + ' 위원님 - ' + curTeam + '번 팀 점수가 저장되었습니다!');
@@ -335,7 +341,7 @@
             if(confirm(curTeam + '번 팀 점수를 초기화하시겠습니까?')) {
                 if(scores[curJudge] && scores[curJudge][curTeam]) {
                     delete scores[curJudge][curTeam];
-                    try { localStorage.setItem('yj_talent_scores_v5', JSON.stringify(scores)); } catch(e){}
+                    try { localStorage.setItem('yj_talent_scores_v6', JSON.stringify(scores)); } catch(e){}
                     renderAll();
                     alert('초기화되었습니다.');
                 } else {
@@ -423,7 +429,7 @@
 
         function resetAll() {
             if(confirm("모든 데이터를 초기화하시겠습니까?")) {
-                try { localStorage.removeItem('yj_talent_scores_v5'); } catch(e){}
+                try { localStorage.removeItem('yj_talent_scores_v6'); } catch(e){}
                 scores = {};
                 renderAll();
                 closeAdmin();
